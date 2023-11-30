@@ -10,7 +10,7 @@ shuttle-runtime = "0.34.1"
 shuttle-secrets = "*"
 # serde = "1.0.148"
 shuttle-shared-db = { version = "0.34.1", features = ["postgres"] }
-sqlx = { version = "0.7.1", features = ["runtime-tokio-native-tls", "postgres"] }
+sqlx = { version = "0.7.1", features = ["runtime-tokio-native-tls", "postgres", "uuid", "chrono", "json"] }
 tokio = "1.26.0"
 
 
