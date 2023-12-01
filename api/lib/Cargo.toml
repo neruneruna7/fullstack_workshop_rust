@@ -13,3 +13,6 @@ tracing = "0.1.40"
 
 # shared
 shared = {path = "../../shared"}
+
+async-trait = "0.1.74"
+uuid = {version = "1.6.1", features = ["serde", "v4", "js"]}
