@@ -7,25 +7,7 @@ use shuttle_secrets::SecretStore;
 use sqlx::PgPool;
 
 
-#[get("/")]
-async fn hello_world() -> &'static str {
-    "Hello World!"
-}
-
-#[get("/version")]
-async fn version(db: web::Data<PgPool>) -> Result<HttpResponse> {
-    tracing::info!("Getting version");
-    let result: Result<String, sqlx::Error> = sqlx::query_scalar("SELECT version()")
-        .fetch_one(db.get_ref())
-        .await;
-
-    let res = match result {
-        Ok(version) => version,
-        Err(e) => format!("Error: {:?}", e),
-    };
-
-    Ok(HttpResponse::Ok().body(res))
-}
+use api_lib::health::{hello_world, version, ping};
 
 #[shuttle_runtime::main]
 async fn actix_web(
@@ -44,7 +26,8 @@ async fn actix_web(
         cfg
         .app_data(pool)
         .service(hello_world)
-        .service(version);
+        .service(version)
+        .service(ping);
     };
 
     Ok(config.into())
