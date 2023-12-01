@@ -1,0 +1,11 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "attach",
+            "name": "Attach to shuttle",
+            "program": "${workspaceFolder}/target/debug/api-shuttle-n71"
+        }
+    ]
+}
