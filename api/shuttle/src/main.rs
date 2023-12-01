@@ -6,7 +6,7 @@ use sqlx::Executor;
 
 use sqlx::PgPool;
 
-use api_lib::health::{health, hello_world};
+
 
 #[shuttle_runtime::main]
 async fn actix_web(
@@ -26,7 +26,9 @@ async fn actix_web(
     let pool = web::Data::new(pool);
 
     let config = move |cfg: &mut ServiceConfig| {
-        cfg.app_data(pool).configure(api_lib::health::service);
+        cfg.app_data(pool)
+            .configure(api_lib::health::service)
+            .configure(api_lib::films::service);
     };
 
     Ok(config.into())

@@ -1,4 +1,4 @@
-use actix_web::{get, web, HttpResponse};
+use actix_web::{web, HttpResponse};
 
 pub const API_VERSION: &str = "v0.0.1";
 
