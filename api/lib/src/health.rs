@@ -1,17 +1,21 @@
 use actix_web::{
     get,
-    HttpResponse,
+    HttpResponse, web,
 };
 
 
-#[get("/")]
-async fn hello_world() -> &'static str {
+
+pub async fn hello_world() -> &'static str {
     "Hello World!"
 }
 
-#[get("/health")]
-async fn health() -> HttpResponse {
+pub async fn health() -> HttpResponse {
     HttpResponse::Ok()
         .append_header(("version", "0.0.1"))
         .finish()
+}
+
+pub fn service(cfg: &mut actix_web::web::ServiceConfig) {
+    cfg.route("/health", web::get().to(health))
+        .route("/", web::get().to(hello_world));
 }

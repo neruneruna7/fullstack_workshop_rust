@@ -28,7 +28,7 @@ async fn actix_web(
     let pool = web::Data::new(pool);
 
     let config = move |cfg: &mut ServiceConfig| {
-        cfg.app_data(pool).service(hello_world).service(health);
+        cfg.app_data(pool).configure(api_lib::health::service);
     };
 
     Ok(config.into())
