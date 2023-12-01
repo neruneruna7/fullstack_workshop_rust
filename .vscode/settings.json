@@ -4,13 +4,6 @@
             "previewLimit": 50,
             "server": "localhost",
             "driver": "PostgreSQL",
-            "name": "ne7-rfw",
-            "connectString": "postgres://user-n7-rfw:yCxGUr9et6GZ@db.shuttle.rs:5432/db-n7-rfw"
-        },
-        {
-            "previewLimit": 50,
-            "server": "localhost",
-            "driver": "PostgreSQL",
             "connectString": "postgres://postgres:postgres@localhost:16191/postgres",
             "name": "n7-rfw-local-docker"
         }
