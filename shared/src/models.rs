@@ -1,20 +1,23 @@
 use serde::{Deserialize, Serialize};
-
+#[cfg_attr(feature = "backend", derive(sqlx::FromRow))]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Default)]
 pub struct Film {
     pub id: uuid::Uuid,
     pub title: String,
     pub director: String,
-    pub year: u16,      // 正の数のみ
+    #[cfg_attr(feature = "backend", sqlx(try_from = "i16"))]
+    pub year: u16, // 正の数のみ
     pub poster: String, // ポスターのURL
     pub created_at: Option<chrono::DateTime<chrono::Utc>>,
     pub updated_at: Option<chrono::DateTime<chrono::Utc>>,
 }
 
+#[cfg_attr(feature = "backend", derive(sqlx::FromRow))]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Default)]
 pub struct CreateFilm {
     pub title: String,
     pub director: String,
-    pub year: u16,      // 正の数のみ
+    #[cfg_attr(feature = "backend", sqlx(try_from = "i16"))]
+    pub year: u16, // 正の数のみ
     pub poster: String, // ポスターのURL
 }

@@ -9,3 +9,9 @@ edition = "2021"
 uuid = {version =  "*", features = ["serde", "v4", "js"]}
 chrono = {version = "*", features = ["serde"]}
 serde = "1.0.193"
+
+# database
+sqlx = { version = "0.7.3", default-features = false, features = [ "runtime-tokio-native-tls", "macros", "postgres", "uuid", "chrono", "json" ], optional = true}
+
+[features]
+backend = ["sqlx"]
