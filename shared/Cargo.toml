@@ -8,3 +8,4 @@ edition = "2021"
 [dependencies]
 uuid = {version =  "*", features = ["serde", "v4", "js"]}
 chrono = {version = "*", features = ["serde"]}
+serde = "1.0.193"
