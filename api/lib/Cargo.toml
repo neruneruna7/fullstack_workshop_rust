@@ -10,3 +10,6 @@ actix-web = "4.3.1"
 actix-rt = "2.9.0"
 sqlx = { version = "0.7.1", features = ["runtime-tokio-native-tls", "postgres", "uuid", "chrono", "json"] }
 tracing = "0.1.40"
+
+# shared
+shared = {path = "../../shared"}

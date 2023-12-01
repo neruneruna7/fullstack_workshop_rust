@@ -6,8 +6,6 @@ use sqlx::Executor;
 
 use sqlx::PgPool;
 
-
-
 #[shuttle_runtime::main]
 async fn actix_web(
     // Dockerを起動している場合は，以下のDB接続のマクロによって自動でDBコンテナが起動される
