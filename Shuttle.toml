@@ -1,1 +1,4 @@
-name="n7_rust_fullstack_worckshop"
+name="n7-rfw"
+assets = [
+    "api/shuttle/static/*",
+]

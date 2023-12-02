@@ -1,0 +1,11 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "server": "localhost",
+            "driver": "PostgreSQL",
+            "connectString": "postgres://postgres:postgres@localhost:16191/postgres",
+            "name": "n7-rfw-local-docker"
+        }
+    ]
+}
