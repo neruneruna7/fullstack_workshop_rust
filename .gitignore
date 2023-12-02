@@ -2,3 +2,5 @@ target/
 Secrets*.toml
 .env.local
 static/
+api/shuttle/static/index.html
+dist/index.html
