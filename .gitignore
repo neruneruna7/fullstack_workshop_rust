@@ -4,3 +4,4 @@ Secrets*.toml
 static/
 api/shuttle/static/index.html
 dist/index.html
+front/dist/index.html
