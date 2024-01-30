@@ -1,6 +1,6 @@
 target/
 Secrets*.toml
-.env.local
+.env
 static/
 api/shuttle/static/index.html
 dist/index.html
