@@ -5,7 +5,7 @@ https://bcnrust.github.io/devbcn-workshop/index.html
 
 ## 環境
 
-- Rust 1.74.0
+- Rust ~~1.74.0~~ 1.75.0にバージョンアップ
 - wsl2 2.0.9.0
 - Ubuntu 22.04.3 LTS
 
@@ -14,11 +14,17 @@ https://bcnrust.github.io/devbcn-workshop/index.html
 ## サーバサイド
 ほぼ完了
 shuttle_static_folderが廃止になったので，その部分は適宜読み替えて実装した．
+Shuttle.toml にassetsの設定を追加することで，静的ファイルを読み込めるようになった．
+
+shuttleのversion0.37では，async-trait安定化後のRustを使わないとコンパイルできない様子（推測に過ぎないが，大きく外れてはいないだろう）
 
 ## クライアントサイド
 dioxus-cliのコマンド名がdxになっていることに注意
+それに伴い，Makefile.tomlのfront-buildのコマンドを修正する必要がある
 
-現在dioxusがうまくビルドできないため，中断中
+~~現在dioxusがうまくビルドできないため，中断中~~
+ビルドに成功
+tailwindの問題だったのか？（結局原因は不明）
 
 エラーメッセージに記述のあるように，wasm-bindgen-cliのバージョンを変更していみたりもしたが，改善せず
 
