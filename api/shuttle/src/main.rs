@@ -21,6 +21,7 @@ async fn actix_web(
 ) -> ShuttleActixWeb<impl FnOnce(&mut ServiceConfig) + Send + Clone + 'static> {
     // let database_url = secret_store.get("DATABASE_URL").unwrap();
     // let pool = PgPool::connect(&database_url).await.unwrap();
+
     let _ = pool
         .execute(include_str!("../../db/schema.sql"))
         .await
