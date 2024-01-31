@@ -8,6 +8,7 @@ use dioxus::{html::section, prelude::*};
 
 use models::FilmModalVisibility;
 use shared::models::Film;
+use uuid::Uuid;
 
 fn main() {
     wasm_logger::init(wasm_logger::Config::default().module_prefix("front"));
@@ -62,6 +63,64 @@ fn App(cx: Scope) -> Element {
         });
     }
 
+    // cx.renderの中でこの関数が呼ばれる際にUuid型を渡しており，それによって型推論が効いている
+    // まだ呼ぶコードを記述していない場合，型推論ができずコンパイルエラーが出る
+    let delete_film = move |film_id| {
+        let force_get_films = force_get_films.clone();
+        cx.spawn({
+            async move {
+                let response = reqwest::Client::new()
+                    .delete(&format!("{}/{}", &films_endpoint(), film_id))
+                    .send()
+                    .await;
+                match response {
+                    Ok(_data) => {
+                        log::info!("Film deleted");
+                        force_get_films.set(());
+                    }
+                    Err(err) => {
+                        log::info!("Error deleting film: {:?}", err);
+                    }
+                }
+            }
+        });
+    };
+
+    let create_or_update_film = move |film: Film| {
+        let force_get_films = force_get_films.clone();
+        let current_selected_film = selected_film.clone();
+        let is_modal_visible = is_modal_visible.clone();
+
+        cx.spawn({
+            async move {
+                let response = if current_selected_film.get().is_some() {
+                    reqwest::Client::new()
+                        .put(&films_endpoint())
+                        .json(&film)
+                        .send()
+                        .await
+                } else {
+                    reqwest::Client::new()
+                        .post(&films_endpoint())
+                        .json(&film)
+                        .send()
+                        .await
+                };
+                match response {
+                    Ok(_data) => {
+                        log::info!("Film created");
+                        current_selected_film.set(None);
+                        is_modal_visible.write().0 = false;
+                        force_get_films.set(());
+                    }
+                    Err(err) => {
+                        log::info!("Error creating film: {:?}", err);
+                    }
+                }
+            }
+        });
+    };
+
     cx.render(rsx! {
         main {
             section {
@@ -78,7 +137,9 @@ fn App(cx: Scope) -> Element {
                                         selected_film.set(Some(film.clone()));
                                         is_modal_visible.write().0 = true;
                                     },
-                                    on_delete: move |_| {}
+                                    on_delete: move |_| {
+                                        delete_film(film.id);
+                                    }
                                 })
                             })}
                         }
@@ -87,7 +148,9 @@ fn App(cx: Scope) -> Element {
             }
             FilmModal {
                 film: selected_film.get().clone(),
-                on_create_or_update: move |new_film| {},
+                on_create_or_update: move |new_film| {
+                    create_or_update_film(new_film);
+                },
                 on_cancel: move |_| {
                     selected_film.set(None);
                     is_modal_visible.write().0 = false;
@@ -96,21 +159,3 @@ fn App(cx: Scope) -> Element {
         }
     })
 }
-
-// #[derive(Props)]
-// pub struct FilmModalProps<'a> {
-//     on_create_or_update: EventHandler<'a, Film>,
-//     on_cancel: EventHandler<'a, MouseEvent>,
-//     #[props(!optional)]
-//     film: Option<Film>,
-// }
-
-// #[inline_props]
-// pub fn FilmCard<'a> (
-//     cx: Scope<'a>,
-//     film:  &'a Film,
-//     on_edit: EventHandler<'a, MouseEvent>,
-//     on_delete: EventHandler<'a, MouseEvent>,
-// ) -> Element {
-
-// }
