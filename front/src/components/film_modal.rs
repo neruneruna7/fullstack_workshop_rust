@@ -25,6 +25,24 @@ pub fn FilmModal<'a>(cx: Scope<'a, FilmModalProps>) -> Element<'a> {
         updated_at: None,
     });
 
+    {
+        let draft_film = draft_film.clone();
+        use_effect(cx, &cx.props.film, |film| async move {
+            match film {
+                Some(film) => draft_film.set(film),
+                None => draft_film.set(Film {
+                    title: String::new(),
+                    id: Uuid::new_v4(),
+                    director: String::new(),
+                    year: 1900,
+                    poster: String::new(),
+                    created_at: None,
+                    updated_at: None,
+                }),
+            }
+        });
+    }
+
     // 不可視状態なら何も描画しない
     if !is_modal_visible.read().0 {
         return None;
