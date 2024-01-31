@@ -4,7 +4,7 @@ mod models;
 
 use components::{FilmCard, FilmModal, Footer, Header};
 // Import the Dioxus prelude to gain access to the `rsx!` macro and the `Scope` and `Element` types.
-use dioxus::prelude::*;
+use dioxus::{html::section, prelude::*};
 
 use models::FilmModalVisibility;
 use shared::models::Film;
@@ -21,11 +21,41 @@ fn App(cx: Scope) -> Element {
     use_shared_state_provider(cx, || FilmModalVisibility(false));
     let is_modal_visible = use_shared_state::<FilmModalVisibility>(cx).unwrap();
 
+    // ローカルな状態
+    let films = use_state::<Option<Vec<Film>>>(cx, || None);
+    let selected_film = use_state::<Option<Film>>(cx, || None);
+    let force_get_films = use_state(cx, || ());
+
     cx.render(rsx! {
         main {
+            section {
+                class: "md:container md:mx-auto md:py-8 flex-1",
+                if let Some(films) = films.get() {
+                    rsx!(
+                        ul {
+                            class: "flex flex-row justify-center items-stretch gap-4 flex-wrap",
+                            {films.iter().map(|film| {
+                                rsx!(FilmCard {
+                                    key: "{film.id}",
+                                    film: film,
+                                    on_edit: move |_| {
+                                        selected_film.set(Some(film.clone()));
+                                        is_modal_visible.write().0 = true;
+                                    },
+                                    on_delete: move |_| {}
+                                })
+                            })}
+                        }
+                    )
+                }
+            }
             FilmModal {
-                on_create_or_update: move |_| {},
-                on_cancel: move |_| {},
+                film: selected_film.get().clone(),
+                on_create_or_update: move |new_film| {},
+                on_cancel: move |_| {
+                    selected_film.set(None);
+                    is_modal_visible.write().0 = false;
+                },
             }
         }
     })
