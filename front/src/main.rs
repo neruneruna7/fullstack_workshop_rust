@@ -8,13 +8,6 @@ use dioxus::{html::section, prelude::*};
 
 use models::FilmModalVisibility;
 use shared::models::Film;
-use uuid::Uuid;
-
-fn main() {
-    wasm_logger::init(wasm_logger::Config::default().module_prefix("front"));
-    // Launch the web application using the App component as the root.
-    dioxus_web::launch(App);
-}
 
 const API_ENDPOINT: &str = "api/v1";
 
@@ -37,6 +30,12 @@ async fn get_films() -> Vec<Film> {
         .json::<Vec<Film>>()
         .await
         .unwrap()
+}
+
+fn main() {
+    wasm_logger::init(wasm_logger::Config::default().module_prefix("front"));
+    // Launch the web application using the App component as the root.
+    dioxus_web::launch(App);
 }
 
 // Define a component that renders a div with the text "Hello, world!"
@@ -123,6 +122,8 @@ fn App(cx: Scope) -> Element {
 
     cx.render(rsx! {
         main {
+            class: "relative z-0 bg-blue-100 w-screen h-auto min-h-screen flex flex-col justify-start items-stretch",
+            Header {}
             section {
                 class: "md:container md:mx-auto md:py-8 flex-1",
                 if let Some(films) = films.get() {
@@ -130,31 +131,34 @@ fn App(cx: Scope) -> Element {
                         ul {
                             class: "flex flex-row justify-center items-stretch gap-4 flex-wrap",
                             {films.iter().map(|film| {
-                                rsx!(FilmCard {
-                                    key: "{film.id}",
-                                    film: film,
-                                    on_edit: move |_| {
-                                        selected_film.set(Some(film.clone()));
-                                        is_modal_visible.write().0 = true;
-                                    },
-                                    on_delete: move |_| {
-                                        delete_film(film.id);
+                                rsx!(
+                                    FilmCard {
+                                        key: "{film.id}",
+                                        film: film,
+                                        on_edit: move |_| {
+                                            selected_film.set(Some(film.clone()));
+                                            is_modal_visible.write().0 = true
+                                        },
+                                        on_delete: move |_| {
+                                            delete_film(film.id)
+                                        }
                                     }
-                                })
+                                )
                             })}
                         }
                     )
                 }
             }
-            FilmModal {
-                film: selected_film.get().clone(),
-                on_create_or_update: move |new_film| {
-                    create_or_update_film(new_film);
-                },
-                on_cancel: move |_| {
-                    selected_film.set(None);
-                    is_modal_visible.write().0 = false;
-                },
+            Footer {}
+        }
+        FilmModal {
+            film: selected_film.get().clone(),
+            on_create_or_update: move |new_film| {
+                create_or_update_film(new_film);
+            },
+            on_cancel: move |_| {
+                selected_film.set(None);
+                is_modal_visible.write().0 = false;
             }
         }
     })
