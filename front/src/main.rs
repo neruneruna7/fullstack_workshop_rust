@@ -2,9 +2,12 @@
 mod components;
 mod models;
 
-use components::{FilmModal, Footer, Header};
+use components::{FilmCard, FilmModal, Footer, Header};
 // Import the Dioxus prelude to gain access to the `rsx!` macro and the `Scope` and `Element` types.
 use dioxus::prelude::*;
+
+use models::FilmModalVisibility;
+use shared::models::Film;
 
 fn main() {
     wasm_logger::init(wasm_logger::Config::default().module_prefix("front"));
@@ -14,6 +17,10 @@ fn main() {
 
 // Define a component that renders a div with the text "Hello, world!"
 fn App(cx: Scope) -> Element {
+    // グローバルな状態
+    use_shared_state_provider(cx, || FilmModalVisibility(false));
+    let is_modal_visible = use_shared_state::<FilmModalVisibility>(cx).unwrap();
+
     cx.render(rsx! {
         main {
             FilmModal {
